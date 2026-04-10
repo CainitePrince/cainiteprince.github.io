@@ -329,7 +329,7 @@
     }
 
     function goBackVideo() {
-      document.getElementById('video-iframe').src = '';
+      document.getElementById('video-iframe').src = 'about:blank';
       showPage(null);
     }
 
@@ -364,8 +364,8 @@
     }
 
     function goBackCode() {
-      const media = document.getElementById('code-media');
-      media.innerHTML = '';
+      const iframe = document.getElementById('code-media').querySelector('iframe');
+	  if (iframe) iframe.src = 'about:blank';
       showPage(null);
     }
 
