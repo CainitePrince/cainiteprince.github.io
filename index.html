@@ -1,1 +1,383 @@
-"Hello World" 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Floris Groen — Portfolio</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #111;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* ── MAIN PAGE ── */
+    #main-page {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 40px 80px;
+    }
+
+    .section-heading {
+      font-size: 2.4rem;
+      font-weight: 300;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 60px;
+      color: #f0f0f0;
+      text-align: center;
+    }
+
+    .section-divider {
+      width: 100%;
+      max-width: 1080px;
+      height: 1px;
+      background: #333;
+      margin: 70px 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 36px;
+      max-width: 1080px;
+      width: 100%;
+    }
+
+    .panel-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .panel-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #aaa;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .panel {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .panel:hover {
+      transform: scale(1.07);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.85);
+    }
+
+    .panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .panel .hover-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .panel:hover .hover-overlay { opacity: 1; }
+
+    /* ── DETAIL PAGES (shared styles) ── */
+    .detail-page {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 40px 60px;
+    }
+
+    .detail-page.active { display: flex; }
+
+    .top-bar {
+      width: 100%;
+      max-width: 960px;
+      margin-bottom: 28px;
+    }
+
+    .back-btn {
+      padding: 9px 22px;
+      background: transparent;
+      border: 1.5px solid rgba(255,255,255,0.5);
+      color: #ccc;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border-radius: 4px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .back-btn:hover { background: #fff; color: #111; border-color: #fff; }
+
+    .detail-title {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      text-align: center;
+      color: #eee;
+    }
+
+    .media-container {
+      width: 100%;
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+      margin-bottom: 36px;
+    }
+
+    .media-container iframe,
+    .media-container img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    /* ── CODE SAMPLE TEXT ── */
+    .code-text {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .code-text a {
+      color: #7ab4f5;
+      text-decoration: none;
+      font-size: 0.95rem;
+      display: inline-block;
+      margin-bottom: 20px;
+      word-break: break-all;
+    }
+
+    .code-text a:hover { text-decoration: underline; }
+
+    .code-text p {
+      font-size: 1rem;
+      line-height: 1.75;
+      color: #ccc;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 800px) {
+      .grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    }
+    @media (max-width: 500px) {
+      .grid { grid-template-columns: 1fr; gap: 20px; }
+      .section-heading { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── MAIN PAGE ── -->
+  <div id="main-page">
+    <h1 class="section-heading">Portfolio</h1>
+    <div class="grid" id="portfolio-grid"></div>
+
+    <div class="section-divider"></div>
+
+    <h2 class="section-heading">Code Samples</h2>
+    <div class="grid" id="code-grid"></div>
+  </div>
+
+  <!-- ── VIDEO DETAIL ── -->
+  <div id="video-page" class="detail-page">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackVideo()">&#8592; Back</button>
+    </div>
+    <h2 class="detail-title" id="video-title"></h2>
+    <div class="media-container">
+      <iframe
+        id="video-iframe"
+        src=""
+        frameborder="0"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- ── CODE SAMPLE DETAIL ── -->
+  <div id="code-page" class="detail-page">
+    <div class="top-bar">
+      <button class="back-btn" onclick="goBackCode()">&#8592; Back</button>
+    </div>
+    <h2 class="detail-title" id="code-title"></h2>
+    <div class="media-container" id="code-media"></div>
+    <div class="code-text" id="code-text"></div>
+  </div>
+
+  <script>
+    // ── Portfolio videos ──
+    const videos = [
+      { title: "Rock, Paper, Scissors — Gamescom 2022", id: "C9ULLQGyfg0" },
+      { title: "Habtic",                                 id: "KQXg8py2-XQ" },
+      { title: "VFX for Websites",                       id: "dsyEaW4dLis" },
+      { title: "March of War",                           id: "saXe0jRibfA" },
+      { title: "Dark Matter",                            id: "KJV0UFKg6j4" },
+      { title: "BimCollab Zoom",                         id: "ZUHIxcFZJBM" },
+    ];
+
+    // ── Code samples ──
+    const codeSamples = [
+      {
+        title: "Dune Runner",
+        image: "https://www.florisgroen.com/wp-content/uploads/2025/07/Screenshot.png",
+        github: "https://github.com/CainitePrince/DuneRunner",
+        text: "Unreal Engine game that I'm working on in my spare time."
+      },
+      {
+        title: "Liquid Simulation",
+        image: "https://www.florisgroen.com/wp-content/uploads/2025/07/Screenshot-1.png",
+        github: "https://github.com/CainitePrince/LiquidSimulatorOptimized",
+        text: "Cellular automata liquid simulation made in Unity with ECS."
+      },
+      {
+        title: "Procedural Blob",
+        image: "https://img.youtube.com/vi/MZEV6LYq38A/maxresdefault.jpg",
+        github: "https://github.com/CainitePrince/Portfolio",
+        text: "Originally made as an experimental background piece for a website. It\u2019s an icosahedron displaced in a vertex shader with fractal brownian motion and mathematical functions. Normals are recalculated to match the displacement. The blob is procedurally textured using barycentric coordinates and lit with three directional lights using basic Lambertian lighting. The procedural texture is manually filtered in the fragment shader to prevent excessive aliasing and shimmering. Bloom is applied as a postprocessing step. Made with three.js.",
+        youtube: "MZEV6LYq38A"
+      }
+    ];
+
+    function buildPanel(item, onClick, hasOverlayIcon) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'panel-wrapper';
+
+      const label = document.createElement('div');
+      label.className = 'panel-title';
+      label.textContent = item.title;
+      label.title = item.title;
+
+      const panel = document.createElement('div');
+      panel.className = 'panel';
+      panel.setAttribute('role', 'button');
+      panel.setAttribute('tabindex', '0');
+      panel.setAttribute('aria-label', 'Open ' + item.title);
+      panel.onclick = onClick;
+      panel.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') onClick(); };
+
+      const img = document.createElement('img');
+      img.alt = item.title;
+      img.src = item.image || item.thumb;
+
+      const overlay = document.createElement('div');
+      overlay.className = 'hover-overlay';
+
+      panel.appendChild(img);
+      panel.appendChild(overlay);
+      wrapper.appendChild(label);
+      wrapper.appendChild(panel);
+      return wrapper;
+    }
+
+    // Build portfolio grid
+    videos.forEach(v => {
+      const item = {
+        title: v.title,
+        image: `https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`
+      };
+      const el = buildPanel(item, () => openVideo(v));
+      // fallback thumbnail
+      el.querySelector('img').onerror = function() {
+        this.onerror = null;
+        this.src = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+      };
+      document.getElementById('portfolio-grid').appendChild(el);
+    });
+
+    // Build code samples grid
+    codeSamples.forEach(s => {
+      const el = buildPanel(s, () => openCode(s));
+      document.getElementById('code-grid').appendChild(el);
+    });
+
+    // ── Video detail ──
+    function openVideo(v) {
+      document.getElementById('video-title').textContent = v.title;
+      document.getElementById('video-iframe').src =
+        `https://www.youtube.com/embed/${v.id}?rel=0&autohide=1&modestbranding=1&showinfo=0&autoplay=0`;
+      showPage('video-page');
+    }
+
+    function goBackVideo() {
+      document.getElementById('video-iframe').src = '';
+      showPage(null);
+    }
+
+    // ── Code sample detail ──
+    function openCode(s) {
+      document.getElementById('code-title').textContent = s.title;
+
+      // Media: video embed for Procedural Blob, image for others
+      const media = document.getElementById('code-media');
+      media.innerHTML = '';
+      if (s.youtube) {
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${s.youtube}?rel=0&autohide=1&modestbranding=1&showinfo=0&autoplay=0`;
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('allowfullscreen', '');
+        iframe.setAttribute('loading', 'lazy');
+        media.appendChild(iframe);
+      } else {
+        const img = document.createElement('img');
+        img.src = s.image;
+        img.alt = s.title;
+        media.appendChild(img);
+      }
+
+      // Text
+      const text = document.getElementById('code-text');
+      text.innerHTML =
+        `<a href="${s.github}" target="_blank" rel="noopener">${s.github}</a>` +
+        `<p>${s.text}</p>`;
+
+      showPage('code-page');
+    }
+
+    function goBackCode() {
+      const media = document.getElementById('code-media');
+      media.innerHTML = '';
+      showPage(null);
+    }
+
+    // ── Page switching ──
+    function showPage(id) {
+      document.getElementById('main-page').style.display = id ? 'none' : '';
+      ['video-page', 'code-page'].forEach(p => {
+        const el = document.getElementById(p);
+        el.classList.toggle('active', p === id);
+      });
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>
